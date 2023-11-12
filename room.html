@@ -1,0 +1,216 @@
+<!doctype html>
+<html data-theme="cupcake">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/src/css/style.css" rel="stylesheet">
+    <meta name="theme-color" content="#f54377">
+    <link rel="shortcut icon" href="/public/video.svg" type="image/x-icon">
+    <title>Meet / Room</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body class="mx-auto">
+    <div class="flex flex-col w-full lg:flex-row">
+        <section class="w-3/4 rounded-box">
+            <div class="mx-auto mb-16" id="stream_container">
+                <div class="flex flex-col items-center justify-center aspect-video h-full w-full hidden" id="stream__box">
+                </div>
+                <div class="container flex flex-col px-5 py-5 mx-auto">
+                    <div class="flex flex-wrap" id="streams__container">
+                    </div>
+                </div>
+            </div>
+            <video src="" id="recorded-video" class="hidden bg-black w-full h-auto mb-8"></video>
+
+            <div id="recorded-video-wrap" class="hidden">
+                <video src="" autoplay="false" id="recorded-video" class="hidden bg-black w-full h-auto mb-8"></video>
+            </div>
+            <div class="btm-nav bg-base-300 z-10">
+                <ul class="flex flex-row space-x-8 md:space-x-20">
+                    <label id="record-btn" class="">
+                        <span class="swap-off btn btn-square btn-outline fill-current">
+                            <span class="material-symbols-outlined">
+                                radio_button_checked
+                            </span>
+                        </span>
+                    </label>
+                    <label id="stop-btn" class="hidden">
+                        <span class="swap-off btn btn-square btn-outline fill-current">
+                            <span class="material-symbols-outlined">
+                                pause
+                            </span>
+                        </span>
+                    </label>
+                    <a id="download-btn" class="hidden">
+                        <span class="swap-off btn btn-square btn-outline fill-current">
+                            <span class="material-symbols-outlined">
+                                download
+                            </span>
+                        </span>
+                    </a>
+                    <label class="swap swap-rotate">
+                        <input type="checkbox" id="mic-btn" />
+
+                        <span class="swap-off btn btn-square btn-outline fill-current">
+                            <span class="material-symbols-outlined">mic</span>
+                        </span>
+
+                        <span class="swap-on btn btn-square btn-outline bg-red-500 text-white fill-current">
+                            <span class="material-symbols-outlined">mic_off</span>
+                        </span>
+                    </label>
+                    <label class="swap swap-rotate">
+                        <input type="checkbox" id="camera-btn" />
+
+                        <span class="swap-off btn btn-square btn-outline fill-current">
+                            <span class="material-symbols-outlined">videocam</span>
+                        </span>
+
+                        <span class="swap-on btn btn-square btn-outline fill-current  bg-red-500 text-white">
+                            <span class="material-symbols-outlined">videocam_off</span>
+                        </span>
+                    </label>
+                    <label class="swap swap-rotate">
+                        <input type="checkbox" id="screenshare-btn" />
+
+                        <span class="swap-off btn btn-square btn-outline fill-current">
+                            <span class="material-symbols-outlined">present_to_all</span>
+                        </span>
+
+                        <span class="swap-on btn btn-square btn-outline fill-current  bg-red-500 text-white">
+                            <span class="material-symbols-outlined">cancel_presentation</span>
+                        </span>
+                    </label>
+                    <label>
+                        <a href="./thanks.html" class="btn btn-square bg-red-500 text-white btn-outline">
+                            <span class="material-symbols-outlined">call_end</span>
+                        </a>
+                    </label>
+                </ul>
+            </div>
+        </section>
+        <section class="md:w-1/4 w-full hidden md:flex flex-grow p-5 z-10 card bg-base-200 rounded-box h-screen">
+            <!-- div with messages -->
+            <div id="messages"></div>
+            <div class="chat chat-start">
+                <div class="chat-header">
+                    Murtaza Salah
+                </div>
+                <div class="chat-bubble">Hey there!</div>
+            </div>
+            <div class="chat chat-end">
+                <div class="chat-header">
+                    Mortaza Golestani
+                </div>
+                <div class="chat-bubble">Hi!<br>How are you?</div>
+            </div>
+            <div class="chat chat-start">
+                <div class="chat-header">
+                    Murtaza Salah
+                </div>
+                <div class="chat-bubble">I'm good.</div>
+            </div>
+            <form action="" class="fixed bottom-3 z-10">
+                <div class="form-control">
+                    <div class="input-group">
+                        <input type="text" placeholder="Enter your message ..." class="input input-bordered" />
+                        <button class="btn btn-square">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 512 512">
+                                <title>ionicons-v5-q</title>
+                                <path d="M16,464,496,256,16,48V208l320,48L16,304Z" />
+                            </svg>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</body>
+<script type="module" src="/src/js/AgoraRTC_N-4.14.2.js"></script>
+<script type="module" src="/src/js/room.js"></script>
+<script type="module" src="/src/js/record.js"></script>
+<script>
+    let displayFrame = document.getElementById("stream__box");
+    let videoFrames = document.getElementsByClassName("video__container");
+    let userIdInDisplayFrame = null;
+    let expandVideoFrame = (e) => {
+        displayFrame.classList.remove("hidden");
+        let child = displayFrame.children[0];
+
+        if (child) {
+            document.getElementById("streams__container").appendChild(child);
+            child.classList.add("xl:w-1/4")
+            child.classList.add("md:w-1/2")
+            child.classList.remove("w-full")
+            child.classList.remove("h-full")
+
+            let indicator = child.getElementsByClassName("indicator")[0];
+            indicator.classList.remove("w-full")
+            indicator.classList.remove("h-full")
+
+            let videoWrapper = child.getElementsByClassName("video_wrapper")[0]
+
+            videoWrapper.classList.add("w-64")
+            videoWrapper.classList.add("h-64")
+            videoWrapper.classList.remove("w-full")
+            videoWrapper.classList.remove("h-full")
+        }
+
+        displayFrame.appendChild(e.currentTarget);
+        userIdInDisplayFrame = e.currentTarget.id;
+        largeFrame = displayFrame.children[0]
+
+        largeFrame.classList.remove("xl:w-1/4")
+        largeFrame.classList.remove("md:w-1/2")
+        largeFrame.classList.add("w-full")
+        largeFrame.classList.add("h-full")
+
+        let indicator = displayFrame.getElementsByClassName("indicator")[0];
+
+        indicator.classList.add("w-full")
+        indicator.classList.add("h-full")
+
+        let videoWrapper = displayFrame.getElementsByClassName("video_wrapper")[0]
+
+        videoWrapper.classList.remove("w-64")
+        videoWrapper.classList.remove("h-64")
+        videoWrapper.classList.add("w-full")
+        videoWrapper.classList.add("h-full")
+    };
+
+    for (let i = 0; videoFrames.length > i; i++) {
+        videoFrames[i].addEventListener("click", expandVideoFrame);
+    }
+
+    let hideDisplayFrame = () => {
+        userIdInDisplayFrame = null;
+        displayFrame.classList.add("hidden");
+
+        let child = displayFrame.children[0]
+        document.getElementById("streams__container").appendChild(child);
+        child.classList.add("xl:w-1/4")
+        child.classList.add("md:w-1/2")
+        child.classList.remove("w-full")
+        child.classList.remove("h-full")
+
+        let indicator = child.getElementsByClassName("indicator")[0];
+        indicator.classList.remove("w-full")
+        indicator.classList.remove("h-full")
+
+        let videoWrapper = child.getElementsByClassName("video_wrapper")[0]
+
+        videoWrapper.classList.add("w-64")
+        videoWrapper.classList.add("h-64")
+        videoWrapper.classList.remove("w-full")
+        videoWrapper.classList.remove("h-full")
+    }
+
+    displayFrame.addEventListener('click', hideDisplayFrame)
+</script>
+<script type="module" src="/src/js/roomRTC.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+
+</html>
